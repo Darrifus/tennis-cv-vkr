@@ -1,0 +1,36 @@
+@startuml
+hide footbox
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+skinparam ParticipantBackgroundColor #EDF5F4
+actor "Игрок" as Player
+box "Компьютер игрока" #F4F8F8
+boundary "Интерфейс" as UI
+control "Анализатор" as Job
+participant "Мяч и поза" as CV
+database "SQLite и файлы" as DB
+end box
+Player -> UI : Выбрать видео, задать метки и параметры
+UI -> Job : Проверить видео и калибровку
+alt Ошибка входных данных
+  Job --> UI : Причина и поле для исправления
+else Данные приняты
+  Job -> DB : Создать запуск со статусом «в работе»\nи сохранить параметры и версии
+  loop Окна кадров с метками времени
+    Job -> CV : Передать кадры
+    CV --> Job : Координаты, поза, видимость
+    Job -> DB : Сохранить наблюдения и события
+  end
+  alt Обработка и запись завершены
+    Job -> DB : Сохранить видео и сводку,\nзафиксировать статус «готово»
+    Job --> UI : Идентификатор результата
+    Player -> UI : Выбрать удар в сводке
+    UI -> DB : Найти время и видео данного запуска
+    UI --> Player : Открыть эпизод по метке времени
+  else Ошибка вычисления или записи
+    Job -> DB : Отметить сбой при доступном хранилище
+    Job --> UI : Сообщить об ошибке
+  end
+end
+@enduml
