@@ -1,0 +1,16 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam activityBackgroundColor #F6F1E9
+|Игрок|
+start
+:Записать тренировку у стены;
+:Открыть видео в проигрывателе;
+while (Остались эпизоды?) is (да)
+  :Найти следующий удар перемоткой;
+  :Определить тип на глаз,\nзаписать время и место попадания;
+endwhile (нет)
+:Подсчитать удары по записям;
+:Найти выбранный эпизод по времени;
+stop
+@enduml

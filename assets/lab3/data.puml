@@ -1,0 +1,57 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam linetype polyline
+skinparam ClassBackgroundColor #EDF5F4
+hide circle
+entity "Видео" as V {
+  * video_id : PK
+  --
+  * путь, контрольная сумма
+  * длительность
+}
+entity "Запуск" as R {
+  * run_id : PK
+  --
+  * video_id : FK
+  * статус, ведущая рука
+  * версии моделей, пороги
+}
+entity "Калибровка" as C {
+  * run_id : PK, FK
+  --
+  * четыре пары точек
+  * ширина и высота области
+  расстояние до линии удара
+}
+entity "Наблюдение" as O {
+  * run_id : PK, FK
+  * номер кадра : PK
+  --
+  * время, видимость мяча
+  центр мяча в пикселях
+  ключевые точки игрока
+}
+entity "Событие" as E {
+  * run_id : PK, FK
+  * event_id : PK
+  --
+  * кадр : FK в наблюдение
+  * вид, уверенность
+  тип удара, x и y на стене
+  id связанного удара : FK
+  оценка скорости
+}
+entity "Результат" as A {
+  * run_id : PK, FK
+  * вид файла : PK
+  --
+  * относительный путь
+}
+V ||--o{ R
+R ||--|| C
+R ||--o{ O
+O ||--o{ E
+R ||--o{ A
+@enduml
